@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ILED Staff Manager · UI Mockup v0.2</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+:root{--bg:#f5f6f8;--ink:#1d2433;--muted:#6b7385;--line:#e3e6ec;--brand:#1f4fd8;--ok:#1a7f4b;--ok-bg:#e6f4ec;--warn:#9a6700;--warn-bg:#fdf3dc;--bad:#b42318;--bad-bg:#fde8e6;--gray-bg:#eceef2}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+button{font:inherit;cursor:pointer}
+a{color:var(--brand)}
+input,select,textarea{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;width:100%;background:#fff;color:var(--ink)}
+label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.field{margin-bottom:12px}
+.hint{font-size:12px;color:var(--muted);margin-top:4px}
+.btn{padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);text-decoration:none;display:inline-block}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.small{padding:4px 9px;font-size:12px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.hidden{display:none!important}
+.badge{padding:3px 9px;border-radius:999px;font-size:12px;font-weight:600;display:inline-block}
+.b-active{background:var(--ok-bg);color:var(--ok)}
+.b-expiring{background:var(--warn-bg);color:var(--warn)}
+.b-ended{background:var(--bad-bg);color:var(--bad)}
+.b-archived{background:var(--gray-bg);color:var(--muted)}
+.empty{padding:40px;text-align:center;color:var(--muted)}
+
+/* logo placeholder: replace with the "sức mạnh kép" logo file */
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;letter-spacing:.5px}
+.logo i{font-style:normal;opacity:.6}
+.logo span{padding:4px 10px;border-radius:8px;border:2px solid currentColor}
+
+/* login */
+.login{min-height:100vh;display:grid;place-items:center}
+.login-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px;width:340px}
+
+/* admin layout */
+.app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+.side{background:#111827;color:#e5e7eb;padding:20px 14px;display:flex;flex-direction:column}
+.side .brand{font-weight:700;margin-bottom:24px;font-size:15px}
+.nav{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:0;color:#cbd5e1;padding:9px 10px;border-radius:8px;text-align:left;margin-bottom:4px}
+.nav.on{background:#1f2937;color:#fff}
+.nav .n{font-size:12px;opacity:.7}
+.side-foot{margin-top:auto;display:flex;gap:6px;align-items:center}
+.side-foot button{background:none;border:1px solid #374151;color:#cbd5e1;padding:4px 8px;border-radius:6px;font-size:12px}
+.side-foot button.on{background:#374151;color:#fff}
+main{padding:24px;min-width:0}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+h1{font-size:20px;margin:0}
+.actions{display:flex;gap:8px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px}
+.stat b{font-size:22px;display:block;margin-top:4px}
+.toolbar{margin-bottom:12px}
+.toolbar input{max-width:320px}
+.table-wrap{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{font-size:12px;color:var(--muted);font-weight:600;background:#fafbfc}
+tr:last-child td{border-bottom:0}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.45);display:grid;place-items:center;padding:16px}
+.modal{background:#fff;border-radius:14px;width:min(640px,100%);max-height:90vh;overflow:auto;padding:22px}
+.modal h3{margin:0 0 14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+.modal-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:8px;align-items:center}
+.share{border:1px dashed var(--line);border-radius:12px;padding:12px;margin-top:6px;display:grid;grid-template-columns:130px 1fr;gap:14px;align-items:center}
+.share .row{display:flex;gap:6px}
+.share .row input{font-size:12px}
+.share .links{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 16px;border-radius:8px;display:none;max-width:90vw;z-index:10}
+
+/* public page */
+.pub-wrap{min-height:100vh;background:var(--bg);padding:24px 16px;display:grid;justify-items:center;align-content:start;gap:14px}
+.pub-top{width:min(420px,100%);display:flex;justify-content:space-between;align-items:center}
+.pub-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;width:min(420px,100%)}
+.pub-title{color:var(--muted);font-size:13px}
+.pub-name{margin:4px 0 2px;font-size:24px}
+.pub-pos{color:var(--muted);margin-bottom:16px}
+.pub-card .row{display:flex;justify-content:space-between;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+.pub-card .row span{color:var(--muted)}
+
+/* phone card */
+.card-wrap{min-height:100vh;background:#e5e7eb;display:grid;place-items:center;padding:16px}
+.vcard{width:min(340px,100%);border-radius:22px;background:linear-gradient(150deg,#1f4fd8,#111827);color:#fff;padding:24px;text-align:center;box-shadow:0 12px 30px rgba(15,23,42,.35)}
+.vcard .logo{justify-content:center;margin-bottom:18px}
+.v-title{opacity:.75;font-size:13px}
+.v-name{font-size:22px;font-weight:700;margin-top:2px}
+.v-pos{opacity:.85;margin-bottom:16px}
+.qrbox{background:#fff;border-radius:14px;padding:12px;display:inline-block}
+.qrbox canvas{display:block}
+.v-id{font-size:12px;opacity:.7;margin-top:10px;letter-spacing:.5px}
+.v-hint{font-size:12px;opacity:.7;margin:4px 0 14px}
+.btn-light{background:#fff;color:#111827;border-radius:10px;padding:10px 26px;font-weight:700;text-decoration:none;display:inline-block}
+
+@media(max-width:800px){
+  .app{grid-template-columns:1fr}
+  .side{flex-direction:row;flex-wrap:wrap;gap:6px}
+  .side .brand{width:100%;margin-bottom:6px}
+  .nav{width:auto}
+  .side-foot{margin-top:0;width:100%}
+  .stats,.grid2,.share{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN (admin) ===== -->
+<div id="login" class="login hidden">
+  <form class="login-card" id="loginForm" autocomplete="off">
+    <h2 style="margin:0 0 4px" data-i18n="login_title">Sign in</h2>
+    <p class="hint" data-i18n="login_sub">ILED Staff Manager · Super admin</p>
+    <div class="field" style="margin-top:14px"><label data-i18n="username">Username</label><input id="lUser"></div>
+    <div class="field"><label data-i18n="pin">6-digit code</label><input id="lPin" type="password" inputmode="numeric" maxlength="6"></div>
+    <p id="loginErr" class="hint" style="color:var(--bad);min-height:18px"></p>
+    <button class="btn primary" style="width:100%" data-i18n="login">Sign in</button>
+    <p class="hint" style="margin-top:12px" data-i18n="login_note">Mockup: credentials are placeholders hardcoded in the script.</p>
+  </form>
+</div>
+
+<!-- ===== ADMIN APP ===== -->
+<div id="app" class="app hidden">
+  <aside class="side">
+    <div class="brand">ILED · Staff</div>
+    <button class="nav on" data-tab="current"><span data-i18n="nav_current">Current</span><span class="n" id="cnt-current"></span></button>
+    <button class="nav" data-tab="attention"><span data-i18n="nav_attention">Needs attention</span><span class="n" id="cnt-attention"></span></button>
+    <button class="nav" data-tab="archived"><span data-i18n="nav_archived">Archived</span><span class="n" id="cnt-archived"></span></button>
+    <div class="side-foot">
+      <button data-lang="en">EN</button>
+      <button data-lang="vi">VI</button>
+      <button id="btnLogout" data-i18n="logout" style="margin-left:auto">Sign out</button>
+    </div>
+  </aside>
+  <main>
+    <div class="top">
+      <h1 id="pageTitle"></h1>
+      <div class="actions">
+        <button class="btn" id="btnExport" data-i18n="export">Export CSV</button>
+        <button class="btn primary" id="btnAdd" data-i18n="add">+ Add staff</button>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="hint" data-i18n="stat_current">Active contracts</span><b id="s-current">0</b></div>
+      <div class="stat"><span class="hint" data-i18n="stat_attention">Expiring or ended</span><b id="s-attention">0</b></div>
+      <div class="stat"><span class="hint" data-i18n="stat_archived">Archived</span><b id="s-archived">0</b></div>
+    </div>
+    <div class="toolbar"><input id="search" data-i18n-ph="search_ph" placeholder="Search by name, position or ID…"></div>
+    <div class="table-wrap"><table><thead><tr id="thead"></tr></thead><tbody id="tbody"></tbody></table></div>
+  </main>
+</div>
+
+<!-- ===== ADD / EDIT MODAL ===== -->
+<div class="modal-bg hidden" id="modalBg">
+  <form class="modal" id="form" autocomplete="off">
+    <h3 id="mTitle"></h3>
+    <div class="grid2">
+      <div class="field"><label data-i18n="f_title">Title / honorific</label>
+        <input id="fTitle" list="titles">
+        <datalist id="titles"><option>Mr.</option><option>Ms.</option><option>Dr.</option><option>Prof.</option><option>Assoc. Prof.</option><option>Lawyer</option></datalist>
+      </div>
+      <div class="field"><label data-i18n="f_name">Full name *</label><input id="fName" required></div>
+      <div class="field"><label data-i18n="f_position">Position</label><input id="fPosition"></div>
+      <div class="field"><label data-i18n="f_id">ILED ID</label><input id="fId" disabled><div class="hint" data-i18n="f_id_hint">Auto-generated.</div></div>
+      <div class="field"><label data-i18n="f_start">Start date *</label><input id="fStart" type="date" required></div>
+      <div class="field"><label data-i18n="f_contract">Contract type</label>
+        <select id="fContract"><option value="1y" data-i18n="f_contract_1y">1 year (standard)</option></select>
+      </div>
+      <div class="field"><label data-i18n="f_end">Contract end (auto)</label><input id="fEnd" disabled></div>
+      <div class="field"><label data-i18n="f_field">Field</label>
+        <select id="fField"><option value="" data-i18n="f_field_none">—</option><option value="law" data-i18n="f_field_law">Law</option><option value="edu" data-i18n="f_field_edu">Education</option></select>
+      </div>
+      <div class="field"><label data-i18n="f_email">Email</label><input id="fEmail" type="email"></div>
+      <div class="field"><label data-i18n="f_phone">Phone</label><input id="fPhone"></div>
+      <div class="field full"><label data-i18n="f_notes">Notes</label><textarea id="fNotes" rows="2"></textarea></div>
+      <div class="field full"><label data-i18n="f_attach">Attachment (optional)</label>
+        <input id="fAttach" type="file" accept=".pdf,.doc,.docx,.png,.jpg">
+        <div class="hint"><span data-i18n="f_attach_hint">Signed contract file.</span> · <span id="attachName"></span></div>
+      </div>
+    </div>
+
+    <!-- Card & share (edit only) -->
+    <div id="shareBox" class="hidden full">
+      <label data-i18n="share_title" style="margin-top:8px">Card & share link</label>
+      <div class="share">
+        <canvas id="qrSmall" width="130" height="130"></canvas>
+        <div>
+          <div class="row"><input id="shareUrl" readonly><button type="button" class="btn small" id="copyBtn" data-i18n="copy">Copy link</button></div>
+          <div class="hint" data-i18n="share_hint">Static link for sharing with partners. QR encodes this link.</div>
+          <div class="hint" id="scanInfo"></div>
+          <div class="links">
+            <a class="btn small" id="openCard" target="_blank" data-i18n="open_card">Open phone card</a>
+            <a class="btn small" id="openPub" target="_blank" data-i18n="open_pub">Open public page</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-foot">
+      <button type="button" class="btn" id="renewBtn" disabled data-i18n="renew">Renew (KPI rule pending)</button>
+      <span style="flex:1"></span>
+      <button type="button" class="btn" id="mCancel" data-i18n="cancel">Cancel</button>
+      <button type="submit" class="btn primary" data-i18n="save">Save</button>
+    </div>
+  </form>
+</div>
+
+<!-- ===== PUBLIC PAGE (#/c/ID) ===== -->
+<div id="pub" class="pub-wrap hidden">
+  <div class="pub-top">
+    <div class="logo"><span>ILED</span><i>×</i><span>TAIO</span></div>
+    <div class="side-foot" style="margin:0">
+      <button data-plang="vi">VI</button>
+      <button data-plang="en">EN</button>
+    </div>
+  </div>
+  <div class="pub-card" id="pubBody"></div>
+</div>
+
+<!-- ===== PHONE VIRTUAL CARD (#/card/ID) ===== -->
+<div id="cardView" class="card-wrap hidden">
+  <div id="cardBody"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- CONFIG (placeholders for this stage) ---------- */
+const ADMIN_USER = 'admin';
+const ADMIN_PIN  = '123456';
+const EXPIRING_DAYS = 60;
+
+/* ---------- i18n ---------- */
+const T = {
+  en: {
+    login_title:'Sign in', login_sub:'ILED Staff Manager · Super admin', username:'Username', pin:'6-digit code', login:'Sign in',
+    login_err:'Wrong username or code.', login_note:'Mockup: credentials are placeholders hardcoded in the script.',
+    nav_current:'Current', nav_attention:'Needs attention', nav_archived:'Archived', logout:'Sign out',
+    stat_current:'Active contracts', stat_attention:'Expiring or ended', stat_archived:'Archived',
+    tab_current:'Current staff', tab_attention:'Needs attention', tab_archived:'Archived staff',
+    search_ph:'Search by name, position or ID…', add:'+ Add staff', export:'Export CSV',
+    edit:'Edit', archive:'Archive', restore:'Restore', days:'days', view:'View',
+    col_id:'ILED ID', col_title:'Title', col_name:'Full name', col_position:'Position', col_start:'Start', col_end:'Contract end',
+    col_left:'Days left', col_status:'Status', col_actions:'Actions',
+    st_active:'Active', st_expiring:'Expiring', st_ended:'Ended', st_archived:'Archived',
+    modal_add:'Add staff', modal_edit:'Edit staff',
+    f_title:'Title / honorific', f_name:'Full name *', f_position:'Position', f_id:'ILED ID', f_id_hint:'Auto-generated.',
+    f_start:'Start date *', f_contract:'Contract type', f_contract_1y:'1 year (standard)', f_end:'Contract end (auto)',
+    f_field:'Field', f_field_none:'—', f_field_law:'Law', f_field_edu:'Education',
+    f_email:'Email', f_phone:'Phone', f_notes:'Notes', f_attach:'Attachment (optional)', f_attach_hint:'Signed contract file.',
+    no_attach:'No file', renew:'Renew (KPI rule pending)', cancel:'Cancel', save:'Save', empty:'No staff in this view.',
+    share_title:'Card & share link', share_hint:'Static link for sharing with partners. The QR code encodes this link.',
+    copy:'Copy link', copied:'Link copied', open_card:'Open phone card', open_pub:'Open public page',
+    scans:'Scans', last_scan:'Last scan', never:'never',
+    toast_saved:'Saved', toast_export:'CSV downloaded. Import it into Google Sheets (File → Import).',
+    toast_archived:'Moved to archive', toast_restored:'Restored',
+    err_name:'Please enter a full name.', err_start:'Please choose a start date.',
+    pub_since:'Since', pub_until:'Valid until', pub_status_active:'Currently collaborating with ILED',
+    pub_status_ended:'No longer collaborating with ILED', pub_footer:'Information is updated automatically by ILED.',
+    pub_notfound:'No valid profile found.', card_hint:'Scan the QR code to view details'
+  },
+  vi: {
+    login_title:'Đăng nhập', login_sub:'Quản lý nhân sự ILED · Super admin', username:'Tên đăng nhập', pin:'Mã 6 số', login:'Đăng nhập',
+    login_err:'Sai tên đăng nhập hoặc mã.', login_note:'Bản mockup: thông tin đăng nhập là giá trị tạm, mã cứng trong script.',
+    nav_current:'Đang hợp tác', nav_attention:'Cần chú ý', nav_archived:'Lưu trữ', logout:'Đăng xuất',
+    stat_current:'Hợp đồng đang hiệu lực', stat_attention:'Sắp hết hạn hoặc đã kết thúc', stat_archived:'Đã lưu trữ',
+    tab_current:'Cộng tác viên đang hợp tác', tab_attention:'Cần chú ý', tab_archived:'Lưu trữ',
+    search_ph:'Tìm theo tên, chức vụ hoặc mã…', add:'+ Thêm người', export:'Xuất CSV',
+    edit:'Sửa', archive:'Lưu trữ', restore:'Khôi phục', days:'ngày', view:'Xem',
+    col_id:'Mã ILED', col_title:'Danh xưng', col_name:'Họ và tên', col_position:'Chức vụ', col_start:'Bắt đầu', col_end:'Hết hạn',
+    col_left:'Còn lại', col_status:'Trạng thái', col_actions:'Thao tác',
+    st_active:'Đang hợp tác', st_expiring:'Sắp hết hạn', st_ended:'Đã kết thúc', st_archived:'Lưu trữ',
+    modal_add:'Thêm cộng tác viên', modal_edit:'Sửa thông tin',
+    f_title:'Danh xưng', f_name:'Họ và tên *', f_position:'Chức vụ', f_id:'Mã ILED', f_id_hint:'Hệ thống tự tạo.',
+    f_start:'Ngày bắt đầu *', f_contract:'Loại hợp đồng', f_contract_1y:'1 năm (tiêu chuẩn)', f_end:'Ngày kết thúc (tự tính)',
+    f_field:'Lĩnh vực', f_field_none:'—', f_field_law:'Luật', f_field_edu:'Giáo dục',
+    f_email:'Email', f_phone:'Số điện thoại', f_notes:'Ghi chú', f_attach:'Đính kèm (tùy chọn)', f_attach_hint:'File hợp đồng đã ký.',
+    no_attach:'Chưa có file', renew:'Gia hạn (chờ quy định KPI)', cancel:'Hủy', save:'Lưu', empty:'Không có dữ liệu trong mục này.',
+    share_title:'Thẻ & link chia sẻ', share_hint:'Link cố định để chia sẻ với đối tác. QR code mã hóa đúng link này.',
+    copy:'Sao chép link', copied:'Đã sao chép link', open_card:'Mở thẻ điện thoại', open_pub:'Mở trang công khai',
+    scans:'Lượt quét', last_scan:'Quét gần nhất', never:'chưa có',
+    toast_saved:'Đã lưu', toast_export:'Đã tải CSV. Nhập vào Google Sheets (File → Import).',
+    toast_archived:'Đã chuyển vào lưu trữ', toast_restored:'Đã khôi phục',
+    err_name:'Vui lòng nhập họ và tên.', err_start:'Vui lòng chọn ngày bắt đầu.',
+    pub_since:'Từ ngày', pub_until:'Hiệu lực đến', pub_status_active:'Đang hợp tác với ILED',
+    pub_status_ended:'Không còn hợp tác với ILED', pub_footer:'Thông tin được hệ thống ILED cập nhật tự động.',
+    pub_notfound:'Không tìm thấy hồ sơ hợp lệ.', card_hint:'Quét mã QR để xem thông tin'
+  }
+};
+
+/* ---------- helpers ---------- */
+const $  = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const isPublicRoute = () => /^#\/(c|card)\//.test(location.hash);
+const L  = () => (isPublicRoute() ? state.pubLang : state.lang);
+const t  = k => (T[L()] && T[L()][k]) || T.en[k] || k;
+const pad = n => String(n).padStart(2,'0');
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parseISO = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
+const TODAY = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const isAdmin = () => sessionStorage.getItem('iled_auth') === '1';
+
+// Contract = 1 year; end = start + 1 year - 1 day
+const addContractEnd = s => { const d = parseISO(s); d.setFullYear(d.getFullYear()+1); d.setDate(d.getDate()-1); return iso(d); };
+const endOf = p => addContractEnd(p.start);
+const daysLeft = endStr => Math.round((parseISO(endStr) - TODAY()) / 86400000);
+const statusOf = p => {
+  if (p.archived) return 'archived';
+  const dl = daysLeft(endOf(p));
+  if (dl < 0) return 'ended';
+  if (dl <= EXPIRING_DAYS) return 'expiring';
+  return 'active';
+};
+// Public page status: only "collaborating" vs "not collaborating"
+const isCollaborating = p => !['ended','archived'].includes(statusOf(p));
+
+function nextId(){
+  const y = new Date().getFullYear();
+  const nums = state.people.filter(p => p.id.startsWith(`ILED-${y}-`)).map(p => +p.id.split('-')[2]);
+  return `ILED-${y}-${String((nums.length ? Math.max(...nums) : 0) + 1).padStart(4,'0')}`;
+}
+// Static, shareable URL (encoded in QR). Based on the current page address.
+const publicUrl = id => location.href.split('#')[0] + '#/c/' + encodeURIComponent(id);
+const cardUrl   = id => location.href.split('#')[0] + '#/card/' + encodeURIComponent(id);
+
+function drawQR(canvas, text, width){
+  if (window.QRCode && canvas) QRCode.toCanvas(canvas, text, {width, margin:1}).catch(() => {});
+}
+const logoHTML = () => `<div class="logo"><span>ILED</span><i>×</i><span>TAIO</span></div>`; // TODO: replace with "sức mạnh kép" logo file
+
+/* ---------- storage ---------- */
+const monthsAgo = n => { const d = TODAY(); d.setMonth(d.getMonth()-n); return iso(d); };
+function seed(){
+  const rows = [
+    {title:'Ms.', name:'Nguyễn Minh Anh',  position:'Giảng viên',         m:3,  field:'edu', email:'anh.nguyen@example.com', scans:14, last:'2026-11-20T09:10:00'},
+    {title:'Mr.', name:'Trần Quốc Bảo',    position:'Cố vấn pháp lý',     m:11, field:'law', email:'', scans:6, last:'2026-11-18T15:02:00'},
+    {title:'Dr.', name:'Lê Thị Hoa',       position:'Chuyên gia đào tạo', m:13, field:'edu', email:'', scans:3, last:'2026-10-02T11:45:00'},
+    {title:'Mr.', name:'Phạm Đức Long',    position:'Cộng tác viên',      m:2,  field:'',    email:'', archived:true, notes:'Chuyển sang dự án khác', scans:0},
+    {title:'Ms.', name:'Võ Ngọc Yến',      position:'Luật sư tư vấn',     m:6,  field:'law', email:'', scans:0}
+  ];
+  const y = new Date().getFullYear();
+  return rows.map((r, i) => ({
+    id: `ILED-${y}-${String(i+1).padStart(4,'0')}`,
+    title: r.title, name: r.name, position: r.position, start: monthsAgo(r.m),
+    field: r.field, email: r.email, phone: '', notes: r.notes || '',
+    attachment: '', archived: !!r.archived,
+    scans: r.scans || 0, lastScan: r.last || null
+  }));
+}
+function load(){
+  try { const raw = localStorage.getItem('iled_staff_mock'); if (raw) return JSON.parse(raw); } catch(e){}
+  return seed();
+}
+function persist(){ localStorage.setItem('iled_staff_mock', JSON.stringify(state.people)); }
+
+const state = {
+  lang: localStorage.getItem('iled_lang') || 'en',
+  pubLang: localStorage.getItem('iled_pub_lang') || 'vi',
+  tab: 'current',
+  q: '',
+  editId: null,
+  people: load()
+};
+
+/* ---------- i18n apply ---------- */
+function applyI18n(){
+  $$('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
+  $$('[data-i18n-ph]').forEach(el => el.placeholder = t(el.dataset.i18nPh));
+  $$('[data-lang]').forEach(b => b.classList.toggle('on', b.dataset.lang === state.lang));
+  $$('[data-plang]').forEach(b => b.classList.toggle('on', b.dataset.plang === state.pubLang));
+  document.documentElement.lang = L();
+}
+
+/* ---------- admin rendering ---------- */
+function render(){
+  const all = state.people;
+  const current   = all.filter(p => !p.archived);
+  const attention = current.filter(p => ['expiring','ended'].includes(statusOf(p)));
+  const archived  = all.filter(p => p.archived);
+
+  $('#cnt-current').textContent = current.length;
+  $('#cnt-attention').textContent = attention.length;
+  $('#cnt-archived').textContent = archived.length;
+  $('#s-current').textContent = current.length;
+  $('#s-attention').textContent = attention.length;
+  $('#s-archived').textContent = archived.length;
+
+  $$('.nav').forEach(b => b.classList.toggle('on', b.dataset.tab === state.tab));
+  $('#pageTitle').textContent = t('tab_' + state.tab);
+
+  const list = state.tab === 'current' ? current : state.tab === 'attention' ? attention : archived;
+  const q = state.q.trim().toLowerCase();
+  const rows = list
+    .filter(p => !q || [p.id, p.name, p.position, p.title].join(' ').toLowerCase().includes(q))
+    .sort((a,b) => a.name.localeCompare(b.name, state.lang === 'vi' ? 'vi' : 'en'));
+
+  $('#thead').innerHTML = ['col_id','col_title','col_name','col_position','col_start','col_end','col_left','col_status','col_actions']
+    .map(k => `<th>${t(k)}</th>`).join('');
+
+  if (!rows.length){
+    $('#tbody').innerHTML = `<tr><td colspan="9" class="empty">${t('empty')}</td></tr>`;
+    return;
+  }
+  $('#tbody').innerHTML = rows.map(p => {
+    const st  = statusOf(p);
+    const end = endOf(p);
+    const dl  = daysLeft(end);
+    const left = (st === 'ended' || st === 'archived') ? '—' : `${dl} ${t('days')}`;
+    return `<tr>
+      <td>${esc(p.id)}</td>
+      <td>${esc(p.title)}</td>
+      <td><b>${esc(p.name)}</b></td>
+      <td>${esc(p.position)}</td>
+      <td>${esc(p.start)}</td>
+      <td>${esc(end)}</td>
+      <td>${left}</td>
+      <td><span class="badge b-${st}">${t('st_' + st)}</span></td>
+      <td>
+        <button class="btn small" data-act="edit" data-id="${esc(p.id)}">${t('edit')}</button>
+        <button class="btn small" data-act="archive" data-id="${esc(p.id)}">${p.archived ? t('restore') : t('archive')}</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function toast(msg){
+  const el = $('#toast');
+  el.textContent = msg;
+  el.style.display = 'block';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.style.display = 'none', 2600);
+}
+
+/* ---------- modal ---------- */
+function updateEnd(){ const s = $('#fStart').value; $('#fEnd').value = s ? addContractEnd(s) : ''; }
+
+function renderShare(p){
+  const url = publicUrl(p.id);
+  $('#shareUrl').value = url;
+  $('#openCard').href = cardUrl(p.id);
+  $('#openPub').href = publicUrl(p.id);
+  $('#scanInfo').textContent = `${t('scans')}: ${p.scans || 0} · ${t('last_scan')}: ${p.lastScan ? new Date(p.lastScan).toLocaleString(state.lang === 'vi' ? 'vi-VN' : 'en-US') : t('never')}`;
+  drawQR($('#qrSmall'), url, 130);
+}
+
+function openModal(id){
+  state.editId = id || null;
+  const p = id ? state.people.find(x => x.id === id) : null;
+  $('#mTitle').textContent = t(id ? 'modal_edit' : 'modal_add');
+  $('#fTitle').value    = p?.title || '';
+  $('#fName').value     = p?.name || '';
+  $('#fPosition').value = p?.position || '';
+  $('#fId').value       = p ? p.id : nextId();   // preview only; final ID assigned on save
+  $('#fStart').value    = p?.start || iso(TODAY());
+  $('#fContract').value = '1y';
+  $('#fField').value    = p?.field || '';
+  $('#fEmail').value    = p?.email || '';
+  $('#fPhone').value    = p?.phone || '';
+  $('#fNotes').value    = p?.notes || '';
+  $('#fAttach').value   = '';
+  $('#attachName').textContent = p?.attachment || t('no_attach');
+  $('#renewBtn').classList.toggle('hidden', !p);
+  $('#shareBox').classList.toggle('hidden', !p);
+  if (p) renderShare(p);
+  updateEnd();
+  $('#modalBg').classList.remove('hidden');
+}
+function closeModal(){ $('#modalBg').classList.add('hidden'); }
+
+function save(){
+  const name  = $('#fName').value.trim();
+  const start = $('#fStart').value;
+  if (!name)  return toast(t('err_name'));
+  if (!start) return toast(t('err_start'));
+
+  const file = $('#fAttach').files[0];
+  const data = {
+    title: $('#fTitle').value.trim(),
+    name,
+    position: $('#fPosition').value.trim(),
+    start,
+    field: $('#fField').value,
+    email: $('#fEmail').value.trim(),
+    phone: $('#fPhone').value.trim(),
+    notes: $('#fNotes').value.trim()
+  };
+  if (state.editId){
+    const p = state.people.find(x => x.id === state.editId);
+    Object.assign(p, data);
+    if (file) p.attachment = file.name;
+  } else {
+    state.people.push({ id: nextId(), ...data, attachment: file ? file.name : '', archived: false, scans: 0, lastScan: null });
+  }
+  persist();
+  closeModal();
+  render();
+  toast(t('toast_saved'));
+}
+
+/* ---------- export ---------- */
+function exportCSV(){
+  const header = ['ILED ID','Title','Full name','Position','Start','Contract end','Status','Email','Phone','Field','Notes','Scans'];
+  const rows = state.people.map(p => {
+    const st = p.archived ? 'archived' : statusOf(p);
+    return [p.id, p.title, p.name, p.position, p.start, endOf(p), st, p.email, p.phone, p.field, p.notes, p.scans || 0];
+  });
+  const csv = [header, ...rows]
+    .map(r => r.map(v => `"${String(v ?? '').replace(/"/g,'""')}"`).join(','))
+    .join('\r\n');
+  const blob = new Blob(['﻿' + csv], {type: 'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `iled_staff_${iso(TODAY())}.csv`;
+  a.click();
+  toast(t('toast_export'));
+}
+
+/* ---------- public page (#/c/ID): what a scanner sees ---------- */
+function renderPublic(id){
+  const p = state.people.find(x => x.id === decodeURIComponent(id));
+  if (!p){
+    $('#pubBody').innerHTML = `<p class="empty">${t('pub_notfound')}</p>`;
+    return;
+  }
+  // Count scans from outside; admin's own previews are not counted.
+  if (!isAdmin()){
+    p.scans = (p.scans || 0) + 1;
+    p.lastScan = new Date().toISOString();
+    persist();
+  }
+  const ok = isCollaborating(p);
+  $('#pubBody').innerHTML = `
+    <div class="pub-title">${esc(p.title)}</div>
+    <h2 class="pub-name">${esc(p.name)}</h2>
+    <div class="pub-pos">${esc(p.position)}</div>
+    <div class="row"><span>${t('col_id')}</span><b>${esc(p.id)}</b></div>
+    <div class="row"><span>${t('pub_since')}</span><b>${esc(p.start)}</b></div>
+    <div class="row"><span>${t('pub_until')}</span><b>${esc(endOf(p))}</b></div>
+    <div style="margin-top:14px"><span class="badge ${ok ? 'b-active' : 'b-ended'}">${t(ok ? 'pub_status_active' : 'pub_status_ended')}</span></div>
+    <p class="hint" style="margin-top:16px">${t('pub_footer')}</p>`;
+}
+
+/* ---------- phone virtual card (#/card/ID) ---------- */
+function renderCard(id){
+  const p = state.people.find(x => x.id === decodeURIComponent(id));
+  if (!p){
+    $('#cardBody').innerHTML = `<p class="empty" style="color:var(--ink)">${t('pub_notfound')}</p>`;
+    return;
+  }
+  $('#cardBody').innerHTML = `
+    <div class="vcard">
+      ${logoHTML()}
+      <div class="v-title">${esc(p.title)}</div>
+      <div class="v-name">${esc(p.name)}</div>
+      <div class="v-pos">${esc(p.position)}</div>
+      <div class="qrbox"><canvas id="cardQR"></canvas></div>
+      <div class="v-id">${esc(p.id)}</div>
+      <div class="v-hint">${t('card_hint')}</div>
+      <a class="btn-light" href="#/c/${encodeURIComponent(p.id)}">${t('view')}</a>
+    </div>`;
+  drawQR($('#cardQR'), publicUrl(p.id), 200);
+}
+
+/* ---------- routing ---------- */
+function route(){
+  const h = location.hash || '#/';
+  const pub  = h.startsWith('#/c/');
+  const card = h.startsWith('#/card/');
+  const adminView = !pub && !card;
+
+  $('#pub').classList.toggle('hidden', !pub);
+  $('#cardView').classList.toggle('hidden', !card);
+  $('#login').classList.toggle('hidden', !(adminView && !isAdmin()));
+  $('#app').classList.toggle('hidden', !(adminView && isAdmin()));
+  closeModal();
+  applyI18n();
+
+  if (pub) renderPublic(h.slice(4));
+  else if (card) renderCard(h.slice(7));
+  else if (isAdmin()) render();
+}
+window.addEventListener('hashchange', route);
+
+/* ---------- events ---------- */
+$('#loginForm').addEventListener('submit', e => {
+  e.preventDefault();
+  if ($('#lUser').value.trim() === ADMIN_USER && $('#lPin').value === ADMIN_PIN){
+    sessionStorage.setItem('iled_auth', '1');
+    $('#loginErr').textContent = '';
+    route();
+  } else {
+    $('#loginErr').textContent = t('login_err');
+  }
+});
+
+$('#btnLogout').onclick = () => { sessionStorage.removeItem('iled_auth'); location.hash = '#/'; route(); };
+
+$$('.nav').forEach(b => b.onclick = () => { state.tab = b.dataset.tab; render(); });
+$$('[data-lang]').forEach(b => b.onclick = () => {
+  state.lang = b.dataset.lang;
+  localStorage.setItem('iled_lang', state.lang);
+  applyI18n();
+  if (isAdmin() && !isPublicRoute()) render();
+});
+$$('[data-plang]').forEach(b => b.onclick = () => {
+  state.pubLang = b.dataset.plang;
+  localStorage.setItem('iled_pub_lang', state.pubLang);
+  route();
+});
+
+$('#search').oninput = e => { state.q = e.target.value; render(); };
+$('#btnAdd').onclick = () => openModal();
+$('#btnExport').onclick = exportCSV;
+$('#mCancel').onclick = closeModal;
+$('#fStart').oninput = updateEnd;
+$('#fStart').onchange = updateEnd;
+$('#fAttach').onchange = e => { $('#attachName').textContent = e.target.files[0]?.name || t('no_attach'); };
+$('#form').onsubmit = e => { e.preventDefault(); save(); };
+$('#copyBtn').onclick = async () => {
+  const v = $('#shareUrl').value;
+  try { await navigator.clipboard.writeText(v); }
+  catch(e){ $('#shareUrl').select(); document.execCommand('copy'); }
+  toast(t('copied'));
+};
+
+$('#tbody').onclick = e => {
+  const b = e.target.closest('button[data-act]');
+  if (!b) return;
+  const p = state.people.find(x => x.id === b.dataset.id);
+  if (!p) return;
+  if (b.dataset.act === 'edit') return openModal(p.id);
+  p.archived = !p.archived;
+  persist();
+  toast(t(p.archived ? 'toast_archived' : 'toast_restored'));
+  render();
+};
+
+/* ---------- init ---------- */
+route();
+</script>
+</body>
+</html>
