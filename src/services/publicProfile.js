@@ -1,7 +1,8 @@
 'use strict';
 
 // Only these fields may appear on the public page and the phone card.
-// Email, phone, notes, attachments and internal flags are never included.
+// Work email and phone are public by decision (used for work contact).
+// Notes, attachment and internal flags are never included.
 function toPublicProfile(view) {
   return {
     id: view.id,
@@ -10,6 +11,9 @@ function toPublicProfile(view) {
     position: view.position,
     startDate: view.startDate,
     endDate: view.endDate,
+    avatarUrl: view.avatarUrl || null,
+    email: view.email || null,
+    phone: view.phone || null,
     collaborating: !view.archived && view.status !== 'ended',
   };
 }

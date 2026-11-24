@@ -8,6 +8,9 @@ const STR = {
     qr_title: 'Mã QR của hồ sơ này', qr_desc: 'Chia sẻ trang này bằng cách cho người khác quét mã.',
     card_hint: 'Quét mã QR để xem thông tin', view: 'Xem',
     notfound: 'Không tìm thấy hồ sơ hợp lệ.',
+    email: 'Email', phone: 'Điện thoại',
+    card_front: 'Mặt trước', card_back: 'Mặt sau', card_open_profile: 'Xem hồ sơ đầy đủ',
+    card_motto: 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM', card_motto_sub: 'Độc lập - Tự do - Hạnh phúc',
   },
   en: {
     id: 'ILED ID', since: 'Since', until: 'Valid until',
@@ -16,6 +19,9 @@ const STR = {
     qr_title: 'QR code for this profile', qr_desc: 'Share this page by letting others scan the code.',
     card_hint: 'Scan the QR code to view details', view: 'View',
     notfound: 'No valid profile found.',
+    email: 'Email', phone: 'Phone',
+    card_front: 'Front', card_back: 'Back', card_open_profile: 'View full profile',
+    card_motto: 'SOCIALIST REPUBLIC OF VIETNAM', card_motto_sub: 'Independence - Freedom - Happiness',
   },
 };
 

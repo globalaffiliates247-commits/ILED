@@ -22,13 +22,6 @@ body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",Ro
 .qrbox{background:#fff;padding:6px;border-radius:10px;flex:none}.qrbox svg{display:block;width:96px;height:96px}
 .qr .tt{font-size:13px;font-weight:700}.qr .ss{font-size:12px;color:#6b7385;margin-top:4px;line-height:1.45}
 .hint{font-size:12px;color:#6b7385;margin:14px 4px 0;line-height:1.5}
-.vcard{margin-top:24px;border-radius:22px;background:linear-gradient(160deg,#C8102E 0%,#7F0B1F 100%);color:#fff;padding:24px 20px 22px;text-align:center;box-shadow:0 12px 30px rgba(127,11,31,.35)}
-.vcard .seal{width:64px;height:64px;margin:0 auto 14px;display:block}
-.vcard .t{color:#fff;opacity:.85}.vcard .n{font-size:22px;font-weight:700}.vcard .p{color:#fff;opacity:.9;margin-bottom:16px}
-.vcard .qrbox{display:inline-block}.vcard .qrbox svg{width:190px;height:190px}
-.vcard .id{font-size:12px;opacity:.85;margin-top:12px;letter-spacing:.6px}
-.vcard .hint{color:#fff;opacity:.8;margin:4px 0 16px}
-.vcard a.btn{background:#fff;color:#C8102E;border-radius:10px;padding:10px 30px;font-weight:700;text-decoration:none;display:inline-block}
 .empty{text-align:center;padding:40px 20px;color:#6b7385}
 `;
 
@@ -59,6 +52,8 @@ function publicPage(p, qrSvg, lang, path) {
       <div class="row"><span>${s.id}</span><b>${esc(p.id)}</b></div>
       <div class="row"><span>${s.since}</span><b>${esc(p.startDate)}</b></div>
       <div class="row"><span>${s.until}</span><b>${esc(p.endDate)}</b></div>
+      ${p.phone ? `<div class="row"><span>${s.phone}</span><b><a href="tel:${esc(p.phone)}">${esc(p.phone)}</a></b></div>` : ''}
+      ${p.email ? `<div class="row"><span>${s.email}</span><b><a href="mailto:${esc(p.email)}">${esc(p.email)}</a></b></div>` : ''}
       <span class="badge ${p.collaborating ? '' : 'off'}">${p.collaborating ? s.collab : s.not_collab}</span>
     </div>
     <div class="qr"><div class="qrbox">${qrSvg}</div>
@@ -68,24 +63,8 @@ function publicPage(p, qrSvg, lang, path) {
   return shell(lang, `${p.fullName} · ILED`, layout(lang, path, content));
 }
 
-function cardPage(p, qrSvg, lang, path) {
-  const s = t(lang);
-  const content = `
-    <div class="vcard">
-      <img class="seal" src="/assets/iled-logo.png" alt="ILED">
-      <div class="t">${esc(p.title)}</div>
-      <div class="n">${esc(p.fullName)}</div>
-      <div class="p">${esc(p.position)}</div>
-      <div class="qrbox">${qrSvg}</div>
-      <div class="id">${esc(p.id)}</div>
-      <div class="hint">${s.card_hint}</div>
-      <a class="btn" href="/c/${encodeURIComponent(p.id)}?lang=${pick(lang)}">${s.view}</a>
-    </div>`;
-  return shell(lang, `${p.fullName} · ILED`, `<div class="wrap">${header(lang, path)}<div class="body">${content}</div></div>`);
-}
-
 function notFoundPage(lang, path) {
   return shell(lang, 'ILED', layout(lang, path, `<div class="card empty">${t(lang).notfound}</div>`));
 }
 
-module.exports = { publicPage, cardPage, notFoundPage, esc };
+module.exports = { publicPage, notFoundPage, esc };

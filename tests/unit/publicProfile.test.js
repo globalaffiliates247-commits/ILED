@@ -14,8 +14,10 @@ const view = {
 test('public profile exposes only whitelisted fields', () => {
   const p = toPublicProfile(view);
   assert.deepEqual(Object.keys(p).sort(),
-    ['collaborating', 'endDate', 'fullName', 'id', 'position', 'startDate', 'title']);
-  assert.equal(JSON.stringify(p).includes('secret@example.com'), false);
+    ['avatarUrl', 'collaborating', 'email', 'endDate', 'fullName', 'id', 'phone', 'position', 'startDate', 'title']);
+  assert.equal(JSON.stringify(p).includes('internal'), false);
+  assert.equal(JSON.stringify(p).includes('https://x'), false);
+  assert.equal(p.email, 'secret@example.com');
 });
 
 test('collaborating is false when ended or archived', () => {

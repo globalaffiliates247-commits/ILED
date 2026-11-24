@@ -25,6 +25,7 @@
     $('fEmail').value = m?.email || '';
     $('fPhone').value = m?.phone || '';
     $('fNotes').value = m?.notes || '';
+    $('fAvatar').value = m?.avatarUrl || '';
     $('fAttachName').value = m?.attachmentName || '';
     $('fAttachUrl').value = m?.attachmentUrl || '';
   }
@@ -52,6 +53,7 @@
       email: nn($('fEmail').value),
       phone: nn($('fPhone').value),
       notes: nn($('fNotes').value),
+      avatarUrl: nn($('fAvatar').value),
       attachmentName: nn($('fAttachName').value),
       attachmentUrl: nn($('fAttachUrl').value),
     };

@@ -1,7 +1,7 @@
 'use strict';
 
 // SQL only. Callers pass either the pool or a transaction client as `db`.
-const UPDATABLE = ['title', 'full_name', 'position', 'start_date', 'end_date', 'field', 'email', 'phone', 'notes', 'attachment_url', 'attachment_name'];
+const UPDATABLE = ['title', 'full_name', 'position', 'start_date', 'end_date', 'field', 'email', 'phone', 'notes', 'attachment_url', 'attachment_name', 'avatar_url'];
 
 async function nextSeq(db, year) {
   const { rows } = await db.query(
@@ -15,11 +15,11 @@ async function nextSeq(db, year) {
 
 async function insert(db, r) {
   const { rows } = await db.query(
-    `INSERT INTO members (id, title, full_name, position, start_date, contract_type, end_date, field, email, phone, notes, attachment_url, attachment_name)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+    `INSERT INTO members (id, title, full_name, position, start_date, contract_type, end_date, field, email, phone, notes, attachment_url, attachment_name, avatar_url)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
      RETURNING *`,
     [r.id, r.title, r.full_name, r.position, r.start_date, r.contract_type, r.end_date,
-      r.field, r.email, r.phone, r.notes, r.attachment_url, r.attachment_name]
+      r.field, r.email, r.phone, r.notes, r.attachment_url, r.attachment_name, r.avatar_url]
   );
   return rows[0];
 }

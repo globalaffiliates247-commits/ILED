@@ -10,7 +10,7 @@ const { formatMemberId } = require('../domain/memberId');
 const API_TO_DB = {
   title: 'title', fullName: 'full_name', position: 'position', startDate: 'start_date',
   contractType: 'contract_type', field: 'field', email: 'email', phone: 'phone', notes: 'notes',
-  attachmentUrl: 'attachment_url', attachmentName: 'attachment_name',
+  attachmentUrl: 'attachment_url', attachmentName: 'attachment_name', avatarUrl: 'avatar_url',
 };
 
 function toDb(input) {
@@ -39,6 +39,7 @@ function toView(row, today = todayVN(), expiringDays = config.expiringDays) {
     notes: row.notes,
     attachmentUrl: row.attachment_url,
     attachmentName: row.attachment_name,
+    avatarUrl: row.avatar_url,
     archived: Boolean(row.archived_at),
     status,
     daysLeft: daysBetween(today, row.end_date),
@@ -90,6 +91,7 @@ async function createMember(input) {
       notes: data.notes ?? null,
       attachment_url: data.attachment_url ?? null,
       attachment_name: data.attachment_name ?? null,
+      avatar_url: data.avatar_url ?? null,
     });
   });
   return toView(row);

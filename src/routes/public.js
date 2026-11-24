@@ -10,6 +10,7 @@ const { publicUrl, renderQrSvg } = require('../services/qr');
 const { verify } = require('../auth/session');
 const { isValidMemberId } = require('../domain/memberId');
 const pages = require('../views/pages');
+const cards = require('../views/card');
 
 const router = express.Router();
 const wrap = (fn) => (req, res, next) => Promise.resolve(fn(req, res)).catch(next);
@@ -41,7 +42,7 @@ router.get('/card/:id', wrap(async (req, res) => {
   const profile = await loadProfile(req.params.id);
   if (!profile) return res.status(404).type('html').send(pages.notFoundPage(lang, req.path));
   const qr = await renderQrSvg(publicUrl(profile.id));
-  return res.type('html').send(pages.cardPage(profile, qr, lang, req.path));
+  return res.type('html').send(cards.cardPage(profile, qr, lang, req.path));
 }));
 
 // QR image of the public link (SVG).
