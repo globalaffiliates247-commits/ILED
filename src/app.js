@@ -15,6 +15,7 @@ app.use(express.json({ limit: '100kb' }));
 app.use(cookieParser());
 
 app.get('/healthz', (req, res) => res.json({ ok: true }));
+app.use('/admin', express.static(path.join(__dirname, 'public', 'admin'), { index: 'index.html', maxAge: 0 }));
 app.use('/assets', express.static(path.join(__dirname, 'public', 'assets'), { maxAge: '1d' }));
 app.use(publicRouter);
 app.use('/api/auth', authRouter);

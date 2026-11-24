@@ -25,6 +25,6 @@ Tests (no database needed):
 
 ## Database
 
-Production uses Supabase (free plan) as managed PostgreSQL. Set `DATABASE_URL` to the
-**Session pooler** connection string from Supabase → Project Settings → Database, with the
-database password filled in. Free projects pause after one week without database activity.
+Production uses Neon (free plan, Singapore region) as managed PostgreSQL. Set `DATABASE_URL` to the
+**direct** (non-pooled) connection string from Neon → Connection details, with the password filled in.
+Do not use the pooled host (`-pooler`): the migration runner relies on a session-level advisory lock.

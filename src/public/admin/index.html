@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>ILED Staff Manager · Admin</title>
+<link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+
+<section id="login" class="login hidden">
+  <form class="login-card" id="loginForm" autocomplete="off">
+    <h2 class="login-title" data-i18n="login_title">Sign in</h2>
+    <p class="hint" data-i18n="login_sub">ILED Staff Manager · Super admin</p>
+    <div class="field"><label for="lUser" data-i18n="username">Username</label><input id="lUser" name="username" required></div>
+    <div class="field"><label for="lPin" data-i18n="pin">6-digit code</label><input id="lPin" name="pin" type="password" inputmode="numeric" maxlength="6" required></div>
+    <p id="loginErr" class="err"></p>
+    <button class="btn primary wide" type="submit" data-i18n="login">Sign in</button>
+  </form>
+</section>
+
+<div id="app" class="app hidden">
+  <aside class="side">
+    <div class="brand">ILED · Staff</div>
+    <button class="nav on" data-tab="current"><span data-i18n="nav_current">Current</span><span class="n" id="cnt-current"></span></button>
+    <button class="nav" data-tab="attention"><span data-i18n="nav_attention">Needs attention</span><span class="n" id="cnt-attention"></span></button>
+    <button class="nav" data-tab="archived"><span data-i18n="nav_archived">Archived</span><span class="n" id="cnt-archived"></span></button>
+    <div class="side-foot">
+      <button class="lang" data-lang="en">EN</button>
+      <button class="lang" data-lang="vi">VI</button>
+      <button id="btnLogout" class="ghost" data-i18n="logout">Sign out</button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="top">
+      <h1 id="pageTitle"></h1>
+      <div class="actions">
+        <a class="btn" id="btnExport" href="/api/members/export.csv" data-i18n="export">Export CSV</a>
+        <button class="btn primary" id="btnAdd" data-i18n="add">+ Add staff</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><span class="hint" data-i18n="stat_current">Active contracts</span><b id="s-current">0</b></div>
+      <div class="stat"><span class="hint" data-i18n="stat_attention">Expiring or ended</span><b id="s-attention">0</b></div>
+      <div class="stat"><span class="hint" data-i18n="stat_archived">Archived</span><b id="s-archived">0</b></div>
+    </div>
+
+    <div class="toolbar"><input id="search" type="search" data-i18n-ph="search_ph" placeholder="Search by name, position or ID…"></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr id="thead"></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<div class="modal-bg hidden" id="modalBg">
+  <form class="modal" id="form" autocomplete="off" novalidate>
+    <h3 id="mTitle"></h3>
+    <div class="grid2">
+      <div class="field"><label for="fTitle" data-i18n="f_title">Title / honorific</label>
+        <input id="fTitle" list="titles">
+        <datalist id="titles"><option>Mr.</option><option>Ms.</option><option>Dr.</option><option>Prof.</option><option>Assoc. Prof.</option><option>Lawyer</option></datalist>
+      </div>
+      <div class="field"><label for="fName" data-i18n="f_name">Full name *</label><input id="fName" required></div>
+      <div class="field"><label for="fPosition" data-i18n="f_position">Position</label><input id="fPosition"></div>
+      <div class="field"><label for="fId" data-i18n="f_id">ILED ID</label><input id="fId" disabled><div class="hint" data-i18n="f_id_hint">Auto-generated.</div></div>
+      <div class="field"><label for="fStart" data-i18n="f_start">Start date *</label><input id="fStart" type="date" required></div>
+      <div class="field"><label for="fEnd" data-i18n="f_end">Contract end (auto)</label><input id="fEnd" disabled><div class="hint" data-i18n="f_end_hint">1 year, calculated from start date.</div></div>
+      <div class="field"><label for="fField" data-i18n="f_field">Field</label>
+        <select id="fField"><option value="" data-i18n="f_field_none">—</option><option value="law" data-i18n="f_field_law">Law</option><option value="edu" data-i18n="f_field_edu">Education</option></select>
+      </div>
+      <div class="field"><label for="fEmail" data-i18n="f_email">Email</label><input id="fEmail" type="email"></div>
+      <div class="field"><label for="fPhone" data-i18n="f_phone">Phone</label><input id="fPhone"></div>
+      <div class="field full"><label for="fNotes" data-i18n="f_notes">Notes</label><textarea id="fNotes" rows="2"></textarea></div>
+      <div class="field full"><label for="fAttachName" data-i18n="f_attach_name">Attachment name</label><input id="fAttachName" data-i18n-ph="f_attach_name_ph" placeholder="e.g. Signed contract 2026"></div>
+      <div class="field full"><label for="fAttachUrl" data-i18n="f_attach_url">Attachment link (https)</label><input id="fAttachUrl" type="url" placeholder="https://drive.google.com/…"><div class="hint" data-i18n="f_attach_hint">Store the link to the file (Google Drive or similar), not the file itself.</div></div>
+    </div>
+
+    <div id="shareBox" class="hidden">
+      <label class="section-label" data-i18n="share_title">Card &amp; share link</label>
+      <div class="share">
+        <img id="qrImg" alt="QR" width="120" height="120">
+        <div>
+          <div class="row"><input id="shareUrl" readonly><button type="button" class="btn small" id="copyBtn" data-i18n="copy">Copy link</button></div>
+          <div class="hint" data-i18n="share_hint">Static link for sharing with partners. The QR code encodes this link.</div>
+          <div class="hint" id="scanInfo"></div>
+          <div class="links">
+            <a class="btn small" id="openCard" target="_blank" rel="noopener" data-i18n="open_card">Open phone card</a>
+            <a class="btn small" id="openPub" target="_blank" rel="noopener" data-i18n="open_pub">Open public page</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p id="formErr" class="err"></p>
+    <div class="modal-foot">
+      <button type="button" class="btn" id="btnCancel" data-i18n="cancel">Cancel</button>
+      <button type="submit" class="btn primary" id="btnSave" data-i18n="save">Save</button>
+    </div>
+  </form>
+</div>
+
+<div class="toast hidden" id="toast"></div>
+
+<script src="/admin/i18n.js"></script>
+<script src="/admin/api.js"></script>
+<script src="/admin/form.js"></script>
+<script src="/admin/app.js"></script>
+</body>
+</html>

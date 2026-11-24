@@ -10,6 +10,7 @@ const { formatMemberId } = require('../domain/memberId');
 const API_TO_DB = {
   title: 'title', fullName: 'full_name', position: 'position', startDate: 'start_date',
   contractType: 'contract_type', field: 'field', email: 'email', phone: 'phone', notes: 'notes',
+  attachmentUrl: 'attachment_url', attachmentName: 'attachment_name',
 };
 
 function toDb(input) {
@@ -53,7 +54,7 @@ async function listMembers({ tab = 'current', q = '' } = {}) {
     items = items.filter((m) => m.archived);
   } else if (tab === 'attention') {
     items = items.filter((m) => !m.archived && (m.status === 'expiring' || m.status === 'ended'));
-  } else {
+  } else if (tab !== 'all') {
     items = items.filter((m) => !m.archived);
   }
   const needle = String(q).trim().toLowerCase();
@@ -87,6 +88,8 @@ async function createMember(input) {
       email: data.email ?? null,
       phone: data.phone ?? null,
       notes: data.notes ?? null,
+      attachment_url: data.attachment_url ?? null,
+      attachment_name: data.attachment_name ?? null,
     });
   });
   return toView(row);

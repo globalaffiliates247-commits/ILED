@@ -16,6 +16,8 @@ const fields = {
   email: z.union([z.literal(''), z.string().trim().email().max(200)]).nullable().optional(),
   phone: str(30).nullable().optional(),
   notes: str(2000).nullable().optional(),
+  attachmentUrl: z.union([z.literal(""), z.string().trim().max(1000).url().refine((u) => /^https:\/\//i.test(u), "Must start with https://")]).nullable().optional(),
+  attachmentName: str(200).nullable().optional(),
 };
 
 const createSchema = z.object({ ...fields, fullName: str(200).min(1), startDate: date });
