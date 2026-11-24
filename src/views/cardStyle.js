@@ -6,7 +6,7 @@ const CARD_CSS = `
 :root{--mar:#6e0f1f;--mar-2:#8c1a2c;--gold:#f0c95c;--gold-2:#f7dc86;--ink:#2b1a10}
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;background:#ece7e4;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#1d2433;font-size:14px}
-.page{max-width:380px;margin:0 auto;padding:14px 14px 28px}
+.page{max-width:400px;margin:0 auto;padding:14px 14px 28px}
 .topbar{display:flex;justify-content:flex-end;gap:10px;font-size:12px;margin-bottom:10px}
 .topbar a{color:#6b7385;text-decoration:none}
 .topbar a.on{color:var(--mar);font-weight:700}
@@ -50,6 +50,7 @@ body{margin:0;min-height:100vh;background:#ece7e4;font-family:system-ui,-apple-s
 .ec-qrbox svg{display:block;width:150px;height:150px}
 .ec-qrtxt{margin-top:8px;font-size:12px;color:var(--gold-2)}
 
+.nw{white-space:nowrap}
 .ec-band{margin:auto -20px 0;padding:14px 18px;text-align:center;font-size:12px;font-weight:700;line-height:1.45;color:var(--ink);background:linear-gradient(var(--gold-2),var(--gold));border-top:4px solid var(--gold)}
 
 .ec-motto{color:var(--gold);font-size:15px;font-weight:800;line-height:1.35;padding-top:34px}

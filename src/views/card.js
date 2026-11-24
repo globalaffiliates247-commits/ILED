@@ -15,6 +15,12 @@ const ICON = {
   globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/>',
 };
 
+// Keep the country name on the same line as the city it follows.
+const addressHtml = () => {
+  const text = esc(INSTITUTE.address);
+  return text.replace(/, (Việt Nam)$/, ', <span class="nw">$1</span>');
+};
+
 const icon = (name) =>
   `<svg class="ec-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[name]}</svg>`;
 
@@ -62,7 +68,7 @@ function frontFace(p, qrSvg, s) {
         <div class="ec-qrbox">${qrSvg}</div>
         <div class="ec-qrtxt">${esc(s.card_hint)}</div>
       </div>
-      <div class="ec-band">${esc(INSTITUTE.address)}</div>
+      <div class="ec-band">${addressHtml()}</div>
     </div>`;
 }
 
@@ -72,7 +78,7 @@ function backFace(s) {
       <div class="ec-motto">${esc(s.card_motto)}</div>
       <div class="ec-motto-sub">${esc(s.card_motto_sub)}</div>
       <img class="ec-seal-lg" src="/assets/iled-logo.png" alt="ILED">
-      <div class="ec-band">${esc(INSTITUTE.address)}</div>
+      <div class="ec-band">${addressHtml()}</div>
     </div>`;
 }
 
