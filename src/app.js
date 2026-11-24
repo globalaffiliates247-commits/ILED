@@ -5,6 +5,8 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const authRouter = require('./routes/auth');
 const membersRouter = require('./routes/members.api');
+const publicRouter = require('./routes/public');
+const path = require('path');
 
 const app = express();
 app.set('trust proxy', 1); // Render sits behind a proxy
@@ -13,6 +15,8 @@ app.use(express.json({ limit: '100kb' }));
 app.use(cookieParser());
 
 app.get('/healthz', (req, res) => res.json({ ok: true }));
+app.use('/assets', express.static(path.join(__dirname, 'public', 'assets'), { maxAge: '1d' }));
+app.use(publicRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/members', membersRouter);
 

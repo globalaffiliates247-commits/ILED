@@ -57,4 +57,11 @@ async function setArchived(db, id, archived) {
   return rows[0] || null;
 }
 
-module.exports = { nextSeq, insert, findById, listAll, update, setArchived };
+async function recordScan(db, id) {
+  await db.query(
+    'UPDATE members SET scan_count = scan_count + 1, last_scanned_at = now() WHERE id = $1',
+    [id]
+  );
+}
+
+module.exports = { nextSeq, insert, findById, listAll, update, setArchived, recordScan };
