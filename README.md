@@ -22,3 +22,9 @@ Tests (no database needed):
 | PUBLIC_BASE_URL | Base URL encoded in QR codes (added in M2) |
 | EXPIRING_DAYS | Days before contract end to show "expiring" (default 60) |
 | NODE_ENV | Set to `production` on Render |
+
+## Database
+
+Production uses Supabase (free plan) as managed PostgreSQL. Set `DATABASE_URL` to the
+**Session pooler** connection string from Supabase → Project Settings → Database, with the
+database password filled in. Free projects pause after one week without database activity.
