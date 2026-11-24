@@ -16,6 +16,7 @@ app.use(cookieParser());
 
 app.get('/healthz', (req, res) => res.json({ ok: true }));
 app.use('/admin', express.static(path.join(__dirname, 'public', 'admin'), { index: 'index.html', maxAge: 0 }));
+app.get('/admin', (req, res) => res.redirect(301, '/admin/'));
 app.use('/assets', express.static(path.join(__dirname, 'public', 'assets'), { maxAge: '1d' }));
 app.use(publicRouter);
 app.use('/api/auth', authRouter);
